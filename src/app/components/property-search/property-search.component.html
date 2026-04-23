@@ -1,0 +1,112 @@
+<div class="property-search-container">
+  <!-- Header -->
+  <header class="header">
+    <h1 class="logo">Pro<span class="logo-highlight">perty</span></h1>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h2 class="hero-title">
+        <span class="hero-highlight">Pro-perty</span>
+      </h2>
+      <p class="hero-subtitle">
+        Real-time ML property valuations based on actual neighborhood comparables.
+      </p>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+      <div class="search-wrapper">
+        <div class="search-input-container">
+          <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="11" cy="11" r="7" stroke="#949494" stroke-width="2"/>
+            <path d="M20 20L16.65 16.65" stroke="#949494" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Enter full address (e.g., 123 Main St, Chicago, IL 60601)"
+            [formControl]="searchControl"
+            (keyup.enter)="searchProperty()"
+          />
+
+          <button 
+            *ngIf="searchControl.value" 
+            class="clear-button"
+            (click)="resetSearch()"
+            type="button"
+          >
+            ×
+          </button>
+        </div>
+
+        <button class="search-button" (click)="searchProperty()" [disabled]="isLoading">
+          {{ isLoading ? 'Analyzing...' : 'Valuate' }}
+        </button>
+      </div>
+      
+      <!-- Error Message -->
+      <div class="error-container" *ngIf="errorMessage">
+        <p class="error-msg">{{ errorMessage }}</p>
+      </div>
+    </section>
+
+    <!-- Loading State -->
+    <div class="loading-container" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Gathering neighborhood comparables and training local model...</p>
+    </div>
+
+    <!-- Results Section -->
+    <section class="results-section" *ngIf="showResults && propertyEstimate">
+      <div class="results-card">
+        <div class="results-header">
+          <h3>Valuation Report</h3>
+          <div class="badge" [ngClass]="propertyEstimate.training_method">
+            {{ propertyEstimate.training_method === 'nearby_comps' ? 'Local ML' : 'General Model' }}
+          </div>
+        </div>
+
+        <div class="address-display">
+          <p>{{ propertyEstimate.address }}</p>
+        </div>
+
+        <div class="price-section">
+          <div class="estimated-price">
+            <span class="price-label">Market Value Estimate</span>
+            <span class="price-value">{{ formatCurrency(propertyEstimate.predicted_price_usd) }}</span>
+          </div>
+          
+          <div class="price-range">
+            <span class="range-label">Reliability: {{ propertyEstimate.confidence_pct }}%</span>
+            <span class="range-value">
+              Range: {{ formatCurrency(propertyEstimate.confidence_interval.low) }} - {{ formatCurrency(propertyEstimate.confidence_interval.high) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insight-item">
+            <span class="insight-label">Comps Used</span>
+            <span class="insight-value">{{ propertyEstimate.comps_used }} neighbors</span>
+          </div>
+          <div class="insight-item">
+            <span class="insight-label">Source</span>
+            <span class="insight-value">ATTOM Data</span>
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          <p>Valuation generated using a hyper-local Random Forest Regressor trained on actual nearby sales data.</p>
+        </div>
+        
+        <div class="actions">
+            <button class="view-details-btn" (click)="resetSearch()">New Valuation</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

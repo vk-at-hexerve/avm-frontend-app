@@ -1,0 +1,161 @@
+<div class="property-detail-container" *ngIf="propertyEstimate">
+  <!-- Header -->
+  <header class="header">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+    <h1 class="logo">Pro<span class="logo-highlight">perty</span></h1>
+  </header>
+
+  <main class="main-content">
+    <!-- Hero Section with Address -->
+    <section class="hero-section">
+      <h2 class="property-address">Look Saket Evara</h2>
+      <div class="hero-content">
+        <div class="property-image">
+          <img src="assets/placeholder-house.jpg" alt="Property" />
+        </div>
+        <div class="hero-text">
+          <p class="address-info">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 0C6.55 0 3.75 2.8 3.75 6.25C3.75 10.625 10 17.5 10 17.5C10 17.5 16.25 10.625 16.25 6.25C16.25 2.8 13.45 0 10 0Z" fill="#E07735"/>
+            </svg>
+            {{ propertyEstimate.address }}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Price Section -->
+    <section class="price-section">
+      <div class="price-card">
+        <h3>Estimated Value</h3>
+        <p class="price-value">{{ formatCurrency(propertyEstimate.estimatedPrice) }}</p>
+        <p class="price-range">
+          {{ formatCurrency(propertyEstimate.priceRange.low) }} - {{ formatCurrency(propertyEstimate.priceRange.high) }}
+        </p>
+      </div>
+    </section>
+
+    <!-- What's Special Section -->
+    <section class="whats-special">
+      <h3>What's Special</h3>
+      <div class="special-items">
+        <div class="special-item">
+          <span class="item-label">Bedrooms</span>
+          <span class="item-value">{{ propertyEstimate.bedrooms }}</span>
+        </div>
+        <div class="special-item">
+          <span class="item-label">Bathrooms</span>
+          <span class="item-value">{{ propertyEstimate.bathrooms }}</span>
+        </div>
+        <div class="special-item">
+          <span class="item-label">Square Feet</span>
+          <span class="item-value">{{ propertyEstimate.sqft | number }}</span>
+        </div>
+        <div class="special-item">
+          <span class="item-label">Lot Size</span>
+          <span class="item-value">{{ propertyEstimate.lotSize }}</span>
+        </div>
+        <div class="special-item">
+          <span class="item-label">Year Built</span>
+          <span class="item-value">{{ propertyEstimate.yearBuilt }}</span>
+        </div>
+        <div class="special-item">
+          <span class="item-label">Property Type</span>
+          <span class="item-value">{{ propertyEstimate.propertyType }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fixtures & Structural Details -->
+    <section class="fixtures-section">
+      <h3>Fixtures & Structural Details</h3>
+      <div class="fixtures-grid">
+        <div class="fixture-group">
+          <h4>Interior</h4>
+          <ul>
+            <li>Bedrooms & Bathrooms</li>
+            <li>Kitchen Features</li>
+            <li>Flooring Type</li>
+          </ul>
+        </div>
+        <div class="fixture-group">
+          <h4>Exterior & Land</h4>
+          <ul>
+            <li>Lot Size</li>
+            <li>Lot Features</li>
+            <li>Building Structures</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Price History -->
+    <section class="price-history">
+      <h3>Price History</h3>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2024-01-15</td>
+            <td>Listed</td>
+            <td>{{ formatCurrency(propertyEstimate.estimatedPrice) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Risk Score -->
+    <section class="risk-score">
+      <h3>Risk Score</h3>
+      <div class="risk-indicators">
+        <div class="risk-indicator risk-a">
+          <span class="risk-label">A</span>
+          <span class="risk-title">Flooding</span>
+        </div>
+        <div class="risk-indicator risk-b">
+          <span class="risk-label">B</span>
+          <span class="risk-title">Earthquakes</span>
+        </div>
+        <div class="risk-indicator risk-c">
+          <span class="risk-label">C</span>
+          <span class="risk-title">Tornadoes</span>
+        </div>
+        <div class="risk-indicator risk-d">
+          <span class="risk-label">D</span>
+          <span class="risk-title">Wildfires</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+      <h3>Let's Get Started</h3>
+      <form class="contact-form">
+        <div class="form-group">
+          <input type="text" placeholder="First Name" required />
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Last Name" required />
+        </div>
+        <div class="form-group">
+          <input type="email" placeholder="Email" required />
+        </div>
+        <div class="form-group">
+          <textarea placeholder="Tell us about yourself" rows="5"></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Get Started</button>
+      </form>
+    </section>
+  </main>
+</div>
+
+<div class="empty-state" *ngIf="!propertyEstimate">
+  <p>No property data available. Please search for a property first.</p>
+  <button class="back-btn" (click)="goBack()">← Go Back</button>
+</div>
