@@ -74,6 +74,62 @@
           <p>{{ propertyEstimate.address }}</p>
         </div>
 
+        <div class="score-section" *ngIf="propertyEstimate.property_score">
+          <div class="gauge-wrapper">
+            <svg viewBox="0 0 120 70" class="gauge-svg">
+              <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" stroke="#333333" stroke-width="10" stroke-linecap="round"/>
+              <path d="M 10 60 A 50 50 0 0 1 110 60" fill="none" 
+                [attr.stroke]="getScoreColor(propertyEstimate.property_score)" 
+                stroke-width="10" stroke-linecap="round"
+                style="stroke-dasharray: 157.08;"
+                [style.stroke-dashoffset]="getScoreDashoffset(propertyEstimate.property_score)"
+                class="gauge-value-arc"/>
+            </svg>
+            <div class="gauge-center">
+              <span class="score-value">{{ propertyEstimate.property_score }}</span>
+              <span class="score-label" [style.color]="getScoreColor(propertyEstimate.property_score)">{{ getScoreLabel(propertyEstimate.property_score) }}</span>
+            </div>
+          </div>
+          <div class="score-text-wrapper">
+            <h4>Property Score</h4>
+            <p>Similar to a credit score. Higher is better.</p>
+            <div class="score-summary" *ngIf="propertyEstimate.score_breakdown">
+              <span class="summary-chip">
+                <strong>Base:</strong> 300
+              </span>
+              <span class="summary-chip" *ngFor="let cat of propertyEstimate.score_breakdown | keyvalue: returnZero">
+                <strong>{{ cat.key.split(' ')[0] }}:</strong> +{{ getCategoryScore(cat.value) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-breakdown" *ngIf="propertyEstimate.score_breakdown && propertyEstimate.property_score">
+          <h4>Score Factors</h4>
+          <div class="breakdown-category" *ngFor="let category of propertyEstimate.score_breakdown | keyvalue: returnZero">
+            <h5 class="category-title">
+              {{ category.key }}
+              <span class="category-score">({{ getCategoryScore(category.value) }} / {{ getCategoryMax(category.value) }})</span>
+            </h5>
+            <div class="breakdown-grid">
+              <div class="breakdown-item" *ngFor="let item of category.value">
+                <div class="item-header">
+                  <span class="item-name">{{ item.name }}</span>
+                  <span class="item-score">{{ item.awarded }}<span class="item-max">/{{ item.max_points }}</span></span>
+                </div>
+                <div class="item-progress-bg">
+                  <!-- Scale 0-1 to 300-900 to reuse getScoreColor -->
+                  <div class="item-progress-fill" 
+                       [style.width.%]="(item.awarded / item.max_points) * 100" 
+                       [style.background-color]="getScoreColor((item.awarded / item.max_points) * 600 + 300)">
+                  </div>
+                </div>
+                <div class="item-desc">{{ item.description }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="price-section">
           <div class="estimated-price">
             <span class="price-label">Market Value Estimate</span>
@@ -96,6 +152,116 @@
           <div class="insight-item">
             <span class="insight-label">Source</span>
             <span class="insight-value">ATTOM Data</span>
+          </div>
+        </div>
+
+        <div class="property-details" *ngIf="propertyEstimate.target_features">
+          <h4>Property Details</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Sq Ft</span>
+              <span class="detail-value">{{ propertyEstimate.target_features['sqft'] || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Lot Sq Ft</span>
+              <span class="detail-value">{{ propertyEstimate.target_features['lot_size_sqft'] || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Type</span>
+              <span class="detail-value">{{ propertyEstimate.property_type || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Subtype</span>
+              <span class="detail-value">{{ propertyEstimate.property_sub_type || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Beds</span>
+              <span class="detail-value">{{ propertyEstimate.property_sub_type === 'Residential' ? (propertyEstimate.target_features['bedrooms'] || 'N/A') : 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Baths</span>
+              <span class="detail-value">{{ propertyEstimate.target_features['bathrooms'] || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Year Built</span>
+              <span class="detail-value">{{ propertyEstimate.target_features['year_built'] || 'N/A' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Basement</span>
+              <span class="detail-value">{{ propertyEstimate.target_features['has_basement'] ? 'Yes' : 'No' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Garage</span>
+              <span class="detail-value">{{ propertyEstimate.target_features['garage_capacity'] || 'N/A' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="property-details" *ngIf="propertyEstimate.neighborhood_features">
+          <h4>Neighborhood Details</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Air Pollution Index</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['air_pollution_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Hurricane Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['hurricane_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Tornado Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['tornado_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Earthquake Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['earthquake_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Poverty Rate</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['poverty_pct'] | number:'1.1-1' }}%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Owner Occupied</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['owner_occupied_pct'] | number:'1.1-1' }}%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Median Income</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['median_household_income'] | currency:'USD':'symbol':'1.0-0' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="property-details" *ngIf="propertyEstimate.neighborhood_features">
+          <h4>Crime Details (Index: 100 = National Avg)</h4>
+          <div class="details-grid">
+            <div class="detail-item">
+              <span class="detail-label">Overall Crime Index</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['crime_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Murder Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['murder_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Assault Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['aggravated_assault_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Burglary Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['burglary_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Robbery Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['forcible_robbery_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Larceny Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['larceny_index'] | number:'1.0-0' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Vehicle Theft Risk</span>
+              <span class="detail-value">{{ propertyEstimate.neighborhood_features['motor_vehicle_theft_index'] | number:'1.0-0' }}</span>
+            </div>
           </div>
         </div>
 

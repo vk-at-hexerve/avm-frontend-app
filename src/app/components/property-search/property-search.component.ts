@@ -68,4 +68,47 @@ export class PropertySearchComponent implements OnInit {
       maximumFractionDigits: 0
     }).format(value);
   }
+
+  // Score meter helpers
+  getScorePercentage(score: number | undefined): number {
+    if (!score) return 0;
+    return Math.max(0, Math.min(100, ((score - 300) / 600) * 100));
+  }
+
+  getScoreColor(score: number | undefined): string {
+    if (!score) return '#949494';
+    if (score >= 750) return '#4caf50'; // Green - Excellent
+    if (score >= 650) return '#8bc34a'; // Light Green - Good
+    if (score >= 550) return '#fbc02d'; // Yellow - Fair
+    if (score >= 450) return '#ff9800'; // Orange - Poor
+    return '#f44336'; // Red - Very Poor
+  }
+
+  getScoreLabel(score: number | undefined): string {
+    if (!score) return 'N/A';
+    if (score >= 750) return 'Excellent';
+    if (score >= 650) return 'Good';
+    if (score >= 550) return 'Fair';
+    if (score >= 450) return 'Poor';
+    return 'Very Poor';
+  }
+
+  getScoreDashoffset(score: number | undefined): number {
+    const circumference = 157.08; // pi * radius(50)
+    const percentage = this.getScorePercentage(score);
+    return circumference - (percentage / 100) * circumference;
+  }
+
+  // Helper for keyvalue pipe to maintain original object insertion order
+  returnZero() {
+    return 0;
+  }
+
+  getCategoryScore(items: any[]): number {
+    return items.reduce((acc, item) => acc + (item.awarded || 0), 0);
+  }
+
+  getCategoryMax(items: any[]): number {
+    return items.reduce((acc, item) => acc + (item.max_points || 0), 0);
+  }
 }

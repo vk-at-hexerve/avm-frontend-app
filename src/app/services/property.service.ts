@@ -15,6 +15,12 @@ export interface PropertyEstimate {
   training_method: string;
   comps_used: number;
   comparable_properties: any[];
+  target_features: { [key: string]: number };
+  neighborhood_features?: { [key: string]: number };
+  property_type: string;
+  property_sub_type: string;
+  property_score?: number;
+  score_breakdown?: { [key: string]: any[] };
 }
 
 @Injectable({
