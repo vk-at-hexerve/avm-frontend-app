@@ -28,9 +28,9 @@
     <section class="price-section">
       <div class="price-card">
         <h3>Estimated Value</h3>
-        <p class="price-value">{{ formatCurrency(propertyEstimate.estimatedPrice) }}</p>
+        <p class="price-value">{{ formatCurrency(propertyEstimate.predicted_price_usd) }}</p>
         <p class="price-range">
-          {{ formatCurrency(propertyEstimate.priceRange.low) }} - {{ formatCurrency(propertyEstimate.priceRange.high) }}
+          {{ formatCurrency(propertyEstimate.confidence_interval.low) }} - {{ formatCurrency(propertyEstimate.confidence_interval.high) }}
         </p>
       </div>
     </section>
@@ -41,27 +41,31 @@
       <div class="special-items">
         <div class="special-item">
           <span class="item-label">Bedrooms</span>
-          <span class="item-value">{{ propertyEstimate.bedrooms }}</span>
+          <span class="item-value">{{ propertyEstimate.target_features['bedrooms'] || 'N/A' }}</span>
         </div>
         <div class="special-item">
           <span class="item-label">Bathrooms</span>
-          <span class="item-value">{{ propertyEstimate.bathrooms }}</span>
+          <span class="item-value">{{ propertyEstimate.target_features['bathrooms'] || 'N/A' }}</span>
         </div>
         <div class="special-item">
           <span class="item-label">Square Feet</span>
-          <span class="item-value">{{ propertyEstimate.sqft | number }}</span>
+          <span class="item-value">{{ propertyEstimate.target_features['sqft'] | number }}</span>
         </div>
         <div class="special-item">
           <span class="item-label">Lot Size</span>
-          <span class="item-value">{{ propertyEstimate.lotSize }}</span>
+          <span class="item-value">{{ propertyEstimate.target_features['lot_size_sqft'] | number }}</span>
         </div>
         <div class="special-item">
           <span class="item-label">Year Built</span>
-          <span class="item-value">{{ propertyEstimate.yearBuilt }}</span>
+          <span class="item-value">{{ propertyEstimate.target_features['year_built'] || 'N/A' }}</span>
         </div>
         <div class="special-item">
           <span class="item-label">Property Type</span>
-          <span class="item-value">{{ propertyEstimate.propertyType }}</span>
+          <span class="item-value">{{ propertyEstimate.property_type || 'N/A' }}</span>
+        </div>
+        <div class="special-item">
+          <span class="item-label">Property Sub Type</span>
+          <span class="item-value">{{ propertyEstimate.property_sub_type || 'N/A' }}</span>
         </div>
       </div>
     </section>
@@ -104,7 +108,7 @@
           <tr>
             <td>2024-01-15</td>
             <td>Listed</td>
-            <td>{{ formatCurrency(propertyEstimate.estimatedPrice) }}</td>
+            <td>{{ formatCurrency(propertyEstimate.predicted_price_usd) }}</td>
           </tr>
         </tbody>
       </table>

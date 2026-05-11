@@ -2,20 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 
-interface PropertyEstimate {
-  address: string;
-  estimatedPrice: number;
-  priceRange: {
-    low: number;
-    high: number;
-  };
-  bedrooms: number;
-  bathrooms: number;
-  sqft: number;
-  lotSize: string;
-  yearBuilt: number;
-  propertyType: string;
-}
+import { PropertyEstimate } from '../../services/property.service';
 
 @Component({
   selector: 'app-property-detail',

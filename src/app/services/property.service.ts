@@ -21,6 +21,9 @@ export interface PropertyEstimate {
   property_sub_type: string;
   property_score?: number;
   score_breakdown?: { [key: string]: any[] };
+  model_metrics?: any;
+  data_sources_hit?: { [key: string]: boolean };
+  warnings?: string[];
 }
 
 @Injectable({
